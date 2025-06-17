@@ -3,7 +3,12 @@ name: Deploy Jupyter Book to GitHub Pages
 on:
   push:
     branches:
-      - main  # Change if your default branch is different
+      - main
+
+permissions:
+  contents: write  
+  pages: write    
+  id-token: write  
 
 jobs:
   build-deploy:
@@ -28,5 +33,9 @@ jobs:
           jupyter-book build data_analysis_with_ai
 
       - name: Deploy to GitHub Pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           ghp-import -n -p -f data_analysis_with_ai/_build/html
